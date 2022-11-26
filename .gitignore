@@ -1,0 +1,9 @@
+*input*
+# !input0.txt
+*output*
+.vscode
+t
+u
+test*.in
+test*.out
+*.pdf
