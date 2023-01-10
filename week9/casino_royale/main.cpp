@@ -40,12 +40,31 @@ class edge_adder {
 };
 
 void tc () {
+    const int mf_s = 0;
+    const int mf_t = mf_s + 1;
+    const int mf_time = mf_t + 1;
     int n_stops, m_missions, l_max_train_agents;
     cin >> n_stops >> m_missions >> l_max_train_agents;
+    graph g;
+    edge_adder ea(g);
+    ea.add_edge(mf_s, mf_time + 0, l_max_train_agents, 0);
+    for (int i = 0; i < n_stops; i++) {
+        // do nothing, the cost of doing nothing is PRIO
+        ea.add_edge(mf_time + i, mf_time + i + 1, l_max_train_agents, PRIO);
+    }
     for (int i = 0; i < m_missions; i++) {
         int x, y, prio;
         cin >> x >> y >> prio;
+        // take the mission, with cost (y - x) * PRIO - prio
+        // cerr << "can take mission from " << x << " to " << y << " -> " << prio << "\n";
+        ea.add_edge(mf_time + x, mf_time + y, 1, (y - x) * PRIO - prio);
     }
+    // report completed missions to HQ, free of charge
+    ea.add_edge(mf_time + n_stops, mf_t, l_max_train_agents, 0);
+    boost::successive_shortest_path_nonnegative_weights(g, mf_s, mf_t);
+    int mf_cost = boost::find_flow_cost(g);
+    // calculate priorities of taken missions
+    cout << l_max_train_agents * n_stops * PRIO - mf_cost << "\n";
 }
 
 int main () {
