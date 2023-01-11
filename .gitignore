@@ -7,3 +7,5 @@ u
 test*.in
 test*.out
 *.pdf
+sample.in
+sample.out
